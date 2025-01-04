@@ -8,41 +8,51 @@ const ctx = canvas.getContext('2d');
 canvas.style.cursor = 'none';
 
 class Vector {
-	constructor(angle) {
+	constructor(angle = 0) {
 		this.angle = angle;
 		this.x = Math.cos(angle);
 		this.y = Math.sin(angle);
 	}
 }
 
+class Player {
+	constructor(x, y, width = 75, height = 20, color = 'white') {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.color = color;
+		this.score = 0;
+	}
 
-const ball = {
-	x: canvas.width / 2 - 10,
-	y: canvas.height / 2 - 10,
-	width: 20,
-	height: 20,
-	speed: 10,
-	vector: new Vector(Math.PI / 3),
-	color: 'white'
+	draw() {
+		drawRect(this.x, this.y, this.width, this.height, this.color);
+	}
 }
 
-const player = {
-	x: (canvas.width / 2) - (75 / 2),
-	y: canvas.height - 40,
-	width: 75,
-	height: 20,
-	color: 'white',
-	score: 0
+class Ball {
+	constructor(x, y, width = 20, height = 20, speed = 10, vector = new Vector(Math.PI / 3), color = 'white') {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.speed = speed;
+		this.vector = vector;
+		this.color = color;
+	}
+
+	draw() {
+		drawRect(this.x, this.y, this.width, this.height, this.color);
+	}
+
+	drawCircle() {
+		drawCircle(this.x, this.y, this.width / 2, this.color);
+	}
 }
 
-const opponent = {
-	x: (canvas.width / 2) - (75 / 2),
-	y: 20,
-	width: 75,
-	height: 20,
-	color: 'white',
-	score: 0
-}
+const ball = new Ball(canvas.width / 2 - 10, canvas.height / 2 - 10);
+const player = new Player((canvas.width / 2) - (75 / 2), canvas.height - 40);
+const opponent = new Player((canvas.width / 2) - (75 / 2), 20);
 
 function drawRect(x, y, w, h, color) {
   ctx.fillStyle = color;
@@ -237,12 +247,11 @@ function render() {
 	ctx.fillText(opponent.score, canvas.width / 2, canvas.height / 4 + 50);
 
 	// Draw paddles
-	drawRect(player.x, player.y, player.width, player.height, player.color);
-	drawRect(opponent.x, opponent.y, opponent.width, opponent.height, opponent.color);
+	player.draw();
+	opponent.draw();
 
 	// Draw ball
-	// drawCircle(ball.x, ball.y, ball.width, ball.color);
-	drawRect(ball.x, ball.y, ball.width, ball.width, ball.color);
+	ball.draw();
 }
 
 function gameLoop() {
